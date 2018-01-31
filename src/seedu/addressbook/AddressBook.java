@@ -14,14 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 /*
  * NOTE : =============================================================
@@ -668,8 +661,10 @@ public class AddressBook {
      * @return formatted message showing internal state
      */
     private static String getMessageForFormattedPersonData(String[] person) {
+        String personName = getNameFromPerson(person);
+        personName = personName.substring(0, 1).toUpperCase() + personName.substring(1);
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+               personName , getPhoneFromPerson(person), getEmailFromPerson(person));
     }
 
     /**
@@ -839,7 +834,8 @@ public class AddressBook {
      * @param person whose name you want
      */
     private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
+        String personName = person[PERSON_DATA_INDEX_NAME];
+        return personName.toLowerCase();
     }
 
     /**
@@ -974,7 +970,8 @@ public class AddressBook {
         final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim();
+        String extractName = encoded.substring(0, indexOfFirstPrefix).trim();
+        return extractName.toLowerCase();
     }
 
     /**
@@ -1161,6 +1158,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
+        toSplit = toSplit.toLowerCase();
         return new ArrayList<>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
