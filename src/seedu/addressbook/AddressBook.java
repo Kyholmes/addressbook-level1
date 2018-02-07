@@ -175,14 +175,20 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+//    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+
+    //modify
+    private static final HashMap<String[], String[]> ALL_PERSONS = new HashMap<>();
 
     /**
      * Stores the most recent list of persons shown to the user as a result of a user command.
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+//    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+
+    //modify
+    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBookArrayList();
 
     /**
      * The path to the file used for storing person data.
@@ -480,7 +486,7 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+        for (String[] person : getAllPersonsInAddressBookArrayList()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
@@ -570,7 +576,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBookArrayList();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
@@ -807,8 +813,12 @@ public class AddressBook {
      * @param person to add
      */
     private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+//        ALL_PERSONS.add(person);
+
+        //modify
+        ALL_PERSONS.put(person, person);
+
+        savePersonsToFile(getAllPersonsInAddressBookArrayList(), storageFilePath);
     }
 
     /**
@@ -818,18 +828,42 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+//        final boolean changed = ALL_PERSONS.remove(exactPerson);
+//        if (changed) {
+//            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+//        }
+        //modify
+        final String[] deletedPerson = ALL_PERSONS.remove(exactPerson);
+        boolean changed = false;
+
+        if(deletedPerson != null)
+        {
+                changed = true;
         }
+
         return changed;
     }
 
     /**
      * Returns all persons in the address book
      */
-    private static ArrayList<String[]> getAllPersonsInAddressBook() {
+//    private static ArrayList<String[]> getAllPersonsInAddressBook() {
+//        return ALL_PERSONS;
+//    }
+
+    //modify
+    private static HashMap<String[],String[]> getAllPersonsInAddressBook()
+    {
         return ALL_PERSONS;
+    }
+
+    private static ArrayList<String[]> getAllPersonsInAddressBookArrayList()
+    {
+        ArrayList<String[]> ALL_PERSON_ARRAYLIST = new ArrayList<String[]>();
+
+        ALL_PERSON_ARRAYLIST.addAll(ALL_PERSONS.values());
+
+        return ALL_PERSON_ARRAYLIST;
     }
 
     /**
@@ -837,7 +871,7 @@ public class AddressBook {
      */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        savePersonsToFile(getAllPersonsInAddressBookArrayList(), storageFilePath);
     }
 
     /**
@@ -847,9 +881,21 @@ public class AddressBook {
      */
     private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
         ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
+
+//        ALL_PERSONS.putAll(persons);
+
+        //modify
+        transferPersonDataToAddressBook(persons);
     }
 
+    //modify
+    private static void transferPersonDataToAddressBook(ArrayList<String[]> persons)
+    {
+        for (int i = 0; i < persons.size(); i++)
+        {
+            ALL_PERSONS.put(persons.get(i), persons.get(i));
+        }
+    }
 
     /*
      * ===========================================
