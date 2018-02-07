@@ -178,7 +178,8 @@ public class AddressBook {
 //    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
 
     //modify
-    private static final HashMap<String[], String[]> ALL_PERSONS = new HashMap<>();
+            private enum PersonProperty{NAME, EMAIL, PHONE};
+    private static final ArrayList<HashMap<PersonProperty, String>> ALL_PERSONS = new ArrayList<>();
 
     /**
      * Stores the most recent list of persons shown to the user as a result of a user command.
@@ -584,7 +585,7 @@ public class AddressBook {
 //    private static String executeSortAddressBook(String commandArgs)
 //    {
 //        String sortType= extractSortType(commandArgs);
-//        List<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+//        List<String[]> toBeDisplayed = AA();
 //        sortList(sortType, toBeDisplayed);
 //        return "";
 //    }
@@ -816,7 +817,12 @@ public class AddressBook {
 //        ALL_PERSONS.add(person);
 
         //modify
-        ALL_PERSONS.put(person, person);
+        HashMap<PersonProperty, String> newPerson = new HashMap<>();
+        newPerson.put(PersonProperty.NAME, getNameFromPerson(person));
+        newPerson.put(PersonProperty.EMAIL, getEmailFromPerson(person));
+        newPerson.put(PersonProperty.PHONE, getPhoneFromPerson(person));
+
+        ALL_PERSONS.add(newPerson);
 
         savePersonsToFile(getAllPersonsInAddressBookArrayList(), storageFilePath);
     }
@@ -833,15 +839,35 @@ public class AddressBook {
 //            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 //        }
         //modify
-        final String[] deletedPerson = ALL_PERSONS.remove(exactPerson);
+//        final String[] deletedPerson = ALL_PERSONS.remove(exactPerson);
+
+        int getDeleteIndex = getIndexFromPersonArrayList(getNameFromPerson(exactPerson));
+
         boolean changed = false;
 
-        if(deletedPerson != null)
+        if(getDeleteIndex > -1)
         {
-                changed = true;
+            ALL_PERSONS.remove(getDeleteIndex);
+            savePersonsToFile(getAllPersonsInAddressBookArrayList(), storageFilePath);
+            changed = true;
         }
 
         return changed;
+    }
+
+    //modify
+    private static int getIndexFromPersonArrayList(String personName)
+    {
+        for(int i = 0; i < ALL_PERSONS.size(); i++)
+        {
+            HashMap<PersonProperty, String> currentPerson = ALL_PERSONS.get(i);
+
+            if(currentPerson.get(PersonProperty.NAME).equalsIgnoreCase(personName));
+
+            return i;
+        }
+
+        return -1;
     }
 
     /**
@@ -852,18 +878,38 @@ public class AddressBook {
 //    }
 
     //modify
-    private static HashMap<String[],String[]> getAllPersonsInAddressBook()
-    {
-        return ALL_PERSONS;
-    }
+//    private static HashMap<String[],String[]> getAllPersonsInAddressBook()
+//    {
+//        return ALL_PERSONS;
+//    }
 
     private static ArrayList<String[]> getAllPersonsInAddressBookArrayList()
     {
         ArrayList<String[]> ALL_PERSON_ARRAYLIST = new ArrayList<String[]>();
 
-        ALL_PERSON_ARRAYLIST.addAll(ALL_PERSONS.values());
+//        ALL_PERSON_ARRAYLIST.addAll(ALL_PERSONS.values());
+
+        for (int i = 0; i < ALL_PERSONS.size(); i++)
+        {
+            String[] personDetailString = transferHashMapToStringArray(ALL_PERSONS.get(i));
+
+            ALL_PERSON_ARRAYLIST.add(personDetailString);
+        }
 
         return ALL_PERSON_ARRAYLIST;
+    }
+
+    private static String[] transferHashMapToStringArray(HashMap<PersonProperty, String> personDetailHashMap)
+    {
+        String[] personDetailStringArray = new String[3];
+
+        personDetailStringArray[PERSON_DATA_INDEX_NAME] = personDetailHashMap.get(PersonProperty.NAME);
+
+        personDetailStringArray[PERSON_DATA_INDEX_PHONE] = personDetailHashMap.get(PersonProperty.PHONE);
+
+        personDetailStringArray[PERSON_DATA_INDEX_EMAIL] = personDetailHashMap.get(PersonProperty.EMAIL);
+
+        return personDetailStringArray;
     }
 
     /**
@@ -893,7 +939,12 @@ public class AddressBook {
     {
         for (int i = 0; i < persons.size(); i++)
         {
-            ALL_PERSONS.put(persons.get(i), persons.get(i));
+            String[] currentPerson = persons.get(i);
+            HashMap<PersonProperty, String> newPerson = new HashMap<>();
+            newPerson.put(PersonProperty.NAME, currentPerson[PERSON_DATA_INDEX_NAME]);
+            newPerson.put(PersonProperty.EMAIL, currentPerson[PERSON_DATA_INDEX_EMAIL]);
+            newPerson.put(PersonProperty.PHONE, currentPerson[PERSON_DATA_INDEX_PHONE]);
+            ALL_PERSONS.add(newPerson);
         }
     }
 
