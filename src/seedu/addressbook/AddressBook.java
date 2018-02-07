@@ -92,6 +92,7 @@ public class AddressBook {
                                                             + PERSON_DATA_PREFIX_PHONE + "%2$s " // phone
                                                             + PERSON_DATA_PREFIX_EMAIL + "%3$s"; // email
     private static final String COMMAND_ADD_WORD = "add";
+    private static final String COMMAND_SORT = "sort";
     private static final String COMMAND_ADD_DESC = "Adds a person to the address book.";
     private static final String COMMAND_ADD_PARAMETERS = "NAME "
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
@@ -374,6 +375,8 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+//            case COMMAND_SORT:
+//                return executeSortAddressBook(commandArgs);
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
@@ -571,6 +574,32 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+
+//    private static String executeSortAddressBook(String commandArgs)
+//    {
+//        String sortType= extractSortType(commandArgs);
+//        List<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+//        sortList(sortType, toBeDisplayed);
+//        return "";
+//    }
+//
+//    private static String extractSortType(String commandArgs)
+//    {
+//        ArrayList<String> commandStringArray = splitByWhitespace(commandArgs.trim());
+//        return commandStringArray.get(1);
+//    }
+//
+//    private static void sortList(String sortType, List<String[]> list)
+//    {
+//        if(sortType.equalsIgnoreCase("asc"))
+//        {
+//           Collections.sort(list);
+//           return;
+//        }
+//
+//        Collections.sort(list);
+//        return;
+//    }
 
     /**
      * Requests to terminate the program.

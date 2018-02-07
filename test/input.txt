@@ -60,6 +60,12 @@
   find Dickson
   # find multiple with some keywords
   find Charlie Betsy
+  # find unique keyword with all upper case
+  find CHARLIE
+  #find unique keyword with all lower case
+  find betsy
+  #find unique keyword with both upper and lower case
+  find cHarLie
 
 ##########################################################
 # test delete person command
